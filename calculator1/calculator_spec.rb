@@ -17,6 +17,14 @@ class TestCalculator < MiniTest::Unit::TestCase
     assert_equal 3, @calc.Add("2,1")
   end
 
+  def test_random_number_of_string_inputs
+    10.times do
+      digits = rand(100).times.map{ rand(10) }
+
+      assert_equal digits.inject(:+), @calc.Add(digits.join(','))
+    end
+  end
+
 
 end
 
