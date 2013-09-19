@@ -14,7 +14,7 @@ class TestCalculator < MiniTest::Unit::TestCase
     assert_equal 10, @calculator.Add('10')
     assert_equal 20, @calculator.Add('10,10')
     assert_equal 30, @calculator.Add('10,10,10')
-    assert_equal 100, @calculator.Add('0,0,0,0,100')
+    assert_equal 101, @calculator.Add('1,0,0,0,100')
   end
 
 end
