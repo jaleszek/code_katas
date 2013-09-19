@@ -37,6 +37,6 @@ end
 class Calculator
   def Add(digits)
     return 0 if digits.eql?('')
-    digits.split(',').map(&:to_i).inject(:+)
+    digits.gsub('\n', ',').split(',').map(&:to_i).inject(:+)
   end
 end
