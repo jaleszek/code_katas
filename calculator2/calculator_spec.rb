@@ -50,6 +50,13 @@ class TestCalculator < MiniTest::Unit::TestCase
     assert_equal '10;;10;;10', @calculator.send(:clean_input, "//;;\n10;;10;;10")
   end
 
+  # context negative digits
+  def test_negative_input
+    err = assert_raises(Exception){ @calculator.Add('-10,10,11,12,-11')}
+    assert_match /-10,-11/, err.message
+    assert_match /negatives not allowed/, err.message
+  end
+
 end
 
 class Calculator
@@ -58,20 +65,29 @@ class Calculator
   def Add(digits)
     return 0 if digits.eql?('')
     if custom_delimiter = get_custom_delimiter_and_clean_input(digits)
-      custom_splitter(digits, custom_delimiter)
+      splited_digits = custom_splitter(digits, custom_delimiter)
     else
-      default_splitter(digits)
+      splited_digits = default_splitter(digits)
     end
+
+    test_negative_input(splited_digits)
+
+    splited_digits.map(&:to_i).inject(:+)
   end
 
   private
 
+  def test_negative_input(digits_array)
+    negative_digits = digits_array.select{|digit| digit=~ /-.+/}
+    raise Exception.new("negatives not allowed: #{negative_digits.join(',')}") if negative_digits.size > 0
+  end
+
   def default_splitter(digits)
-    digits.gsub("\n", ',').split(',').map(&:to_i).inject(:+)
+    digits.gsub("\n", ',').split(',')
   end
 
   def custom_splitter(digits, delimiter)
-    digits.split(delimiter).map(&:to_i).inject(:+)
+    digits.split(delimiter)
   end
 
   def get_custom_delimiter_and_clean_input(digits)
