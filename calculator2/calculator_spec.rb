@@ -10,12 +10,11 @@ class TestCalculator < MiniTest::Unit::TestCase
     assert_equal 0, @calculator.Add('')
   end
 
-  def test_for_one_digit_input
+  def test_for_various_length_inputs
     assert_equal 10, @calculator.Add('10')
-  end
-
-  def test_for_two_digits_input
-    assert_equal 23, @calculator.Add('20,3')
+    assert_equal 20, @calculator.Add('10,10')
+    assert_equal 30, @calculator.Add('10,10,10')
+    assert_equal 100, @calculator.Add('0,0,0,0,100')
   end
 
 end
