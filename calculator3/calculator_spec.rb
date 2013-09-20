@@ -48,7 +48,6 @@ class Calculator
 
   def format(input)
     if s = get_delimiter(input)
-      
     else
     end
 
