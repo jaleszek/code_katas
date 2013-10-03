@@ -25,7 +25,7 @@ class TestCalculator < MiniTest::Unit::TestCase
       50 => '5,5,10,10,5,5,5,5'
     }
     inputs.each do |sum, input|
-      assert_equal sum, input
+      assert_equal sum, @calculator.Add(input)
     end
 
   end
