@@ -9,20 +9,15 @@ class TestCalculator < MiniTest::Unit::TestCase
     assert_equal 0, @calculator.Add('')
   end
 
-  def test_one_argument_input
-    assert_equal 1, @calculator.Add('1')
-  end
-
-  def test_two_arguments_input
-    assert_equal 4, @calculator.Add('2,2')
-  end
-
   def test_various_number_of_arguments
     inputs = {
+      1 => '1',
       10 => '5,2,3',
       20 => '5,5,5,5',
       30 => '5,5,5,5,5,5',
-      50 => '5,5,10,10,5,5,5,5'
+      50 => '5,5,10,10,5,5,5,5',
+      50 =>  "5\n5,5\n5,10\n5\n5,10",
+      50 => "5\n5\n10\n10\n10\n10"
     }
     inputs.each do |sum, input|
       assert_equal sum, @calculator.Add(input)
@@ -36,6 +31,11 @@ class Calculator
 
   def self.Add(input)
     return 0 if input == ''
+    supported_delimiters = [',', "\n"]
+
+    supported_delimiters.each do |delimiter|
+      input = input.gsub(/#{delimiter}/, ',')
+    end
 
     input.split(',').map(&:to_i).inject(:+)
   end
