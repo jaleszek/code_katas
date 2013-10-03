@@ -29,7 +29,8 @@ class TestCalculator < MiniTest::Unit::TestCase
     inputs = {
       10 => "//;;\n1;;8;;1",
       20 => "//[]\n5[]10[]1[]3[]1",
-      30 => "//,.\n5,.10,.10,.5"
+      30 => "//,.\n5,.10,.10,.5",
+      10 => "//***\n1***8***1"
     }
     inputs.each do |sum, input|
       assert_equal sum, @calculator.Add(input)
