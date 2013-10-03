@@ -41,6 +41,16 @@ class TestCalculator < MiniTest::Unit::TestCase
     assert_match /-10, -11/, err.message
     assert_match /negatives not allowed/, err.message
   end
+
+  def test_ignore_bigger_numbers
+    inputs ={
+      10 => '1001,1001,1001,2,1001,8',
+      10 => '2,1000000,2,6,10000'
+    }
+    inputs.each do |sum, input|
+      assert_equal sum, @calculator.Add(input)
+    end
+  end
 end
 
 
@@ -64,7 +74,7 @@ class Calculator
     numbers = input.split(',').map(&:to_i)
     negative_numbers = numbers.select{|number| number < 0 }
     raise Exception.new("negatives not allowed: #{negative_numbers.join(', ')} ") unless negative_numbers.size == 0
-    numbers
+    numbers.select{ |number| number <= 1_000}
   end
 
   def self.collect_delimiter(input)
