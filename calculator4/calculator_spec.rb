@@ -59,25 +59,28 @@ class Calculator
   def self.Add(input)
     return 0 if input == ''
 
-    input, delimiters = collect_delimiter(input)
-
-    delimiters.each do |delimiter|
-      input = input.gsub(delimiter, ',')
-    end
-
-    collect_numbers(input).inject(:+)
+    input = standardize(*custom_delimiter(input))
+    collect_numbers(input)
   end
 
   private
+
+  def self.standardize(input, delimiters)
+    delimiters.each do |delimiter|
+      input = input.gsub(delimiter, ',')
+    end
+    input
+  end
 
   def self.collect_numbers(input)
     numbers = input.split(',').map(&:to_i)
     negative_numbers = numbers.select{|number| number < 0 }
     raise Exception.new("negatives not allowed: #{negative_numbers.join(', ')} ") unless negative_numbers.size == 0
-    numbers.select{ |number| number <= 1_000}
+    numbers.select!{ |number| number <= 1_000}
+    numbers.inject(:+)
   end
 
-  def self.collect_delimiter(input)
+  def self.custom_delimiter(input)
     definition = input.scan(/\/\/\S+\n/)
     if deff = definition.first
       input = (input.gsub(deff, ''))
@@ -87,6 +90,6 @@ class Calculator
       delimiter = [',', "\n"]
     end
 
-    return input, delimiter
+    [input, delimiter]
   end
 end
