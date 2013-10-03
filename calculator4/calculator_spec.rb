@@ -43,11 +43,9 @@ class Calculator
   def self.Add(input)
     return 0 if input == ''
 
-    res = collect_delimiter(input)
-    input = res[:input]
-    supported_delimiters = res[:delimiter]
+    input, delimiters = collect_delimiter(input)
 
-    supported_delimiters.each do |delimiter|
+    delimiters.each do |delimiter|
       input = input.gsub(delimiter, ',')
     end
 
@@ -59,15 +57,13 @@ class Calculator
   def self.collect_delimiter(input)
     definition = input.scan(/\/\/\S+\n/)
     if deff = definition.first
-      {
-        input: (input.gsub(deff, '')),
-        delimiter: Array(deff[2..-2])
-      }
+      input = (input.gsub(deff, ''))
+      delimiter = Array(deff[2..-2])
     else
-      {
-        input: input,
-        delimiter: [',', "\n"]
-      }
+      input = input
+      delimiter = [',', "\n"]
     end
+
+    return input, delimiter
   end
 end
