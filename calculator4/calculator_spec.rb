@@ -35,6 +35,12 @@ class TestCalculator < MiniTest::Unit::TestCase
       assert_equal sum, @calculator.Add(input)
     end
   end
+
+  def test_negative_input
+    err = assert_raises(Exception){ @calculator.Add('-10,10,11,12,-11')}
+    assert_match /-10, -11/, err.message
+    assert_match /negatives not allowed/, err.message
+  end
 end
 
 
@@ -49,10 +55,17 @@ class Calculator
       input = input.gsub(delimiter, ',')
     end
 
-    input.split(',').map(&:to_i).inject(:+)
+    collect_numbers(input).inject(:+)
   end
 
   private
+
+  def self.collect_numbers(input)
+    numbers = input.split(',').map(&:to_i)
+    negative_numbers = numbers.select{|number| number < 0 }
+    raise Exception.new("negatives not allowed: #{negative_numbers.join(', ')} ") unless negative_numbers.size == 0
+    numbers
+  end
 
   def self.collect_delimiter(input)
     definition = input.scan(/\/\/\S+\n/)
