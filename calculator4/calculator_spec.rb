@@ -24,6 +24,17 @@ class TestCalculator < MiniTest::Unit::TestCase
     end
 
   end
+
+  def test_custom_delimiter
+    inputs = {
+      10 => "//;;\n1;;8;;1",
+      20 => "//[]\n5[]10[]1[]3[]1",
+      30 => "//,.\n5,.10,.10,.5"
+    }
+    inputs.each do |sum, input|
+      assert_equal sum, @calculator.Add(input)
+    end
+  end
 end
 
 
@@ -31,12 +42,32 @@ class Calculator
 
   def self.Add(input)
     return 0 if input == ''
-    supported_delimiters = [',', "\n"]
+
+    res = collect_delimiter(input)
+    input = res[:input]
+    supported_delimiters = res[:delimiter]
 
     supported_delimiters.each do |delimiter|
-      input = input.gsub(/#{delimiter}/, ',')
+      input = input.gsub(delimiter, ',')
     end
 
     input.split(',').map(&:to_i).inject(:+)
+  end
+
+  private
+
+  def self.collect_delimiter(input)
+    definition = input.scan(/\/\/\S+\n/)
+    if deff = definition.first
+      {
+        input: (input.gsub(deff, '')),
+        delimiter: Array(deff[2..-2])
+      }
+    else
+      {
+        input: input,
+        delimiter: [',', "\n"]
+      }
+    end
   end
 end
