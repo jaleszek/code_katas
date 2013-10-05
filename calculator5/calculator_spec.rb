@@ -40,6 +40,11 @@ class TestCalculator < MiniTest::Unit::TestCase
     err = assert_raises(Exception) { @calculator.Add('-1,-2,3')}
     assert_match err.message, 'negatives not allowed: -1, -2'
   end
+
+  def test_big_numbers
+    assert_equal 10, @calculator.Add('1001,1001,10,10001,10000')
+    assert_equal 20, @calculator.Add('5,1001,1002,5,10000,5,5')
+  end
 end
 
 class Calculator
@@ -48,7 +53,7 @@ class Calculator
 
     numbers = normalize_input(numbers)
     numbers = collect_numbers(numbers)
-    handle_conditions(numbers)
+    numbers = handle_conditions(numbers)
 
     numbers.inject(:+)
   end
@@ -57,6 +62,8 @@ class Calculator
     if negatives = numbers.select{ |number| number < 0 } and negatives.size > 0
       raise Exception.new("negatives not allowed: #{negatives.join(', ')}")
     end
+
+    numbers.select{|number| number <= 1000 }
   end
 
   def self.get_delimiter_and_clean_input(input)
