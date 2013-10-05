@@ -16,6 +16,13 @@ class TestCalculator < MiniTest::Unit::TestCase
   def test_two_arg_input
     assert_equal 10, @calculator.Add('5,5')
   end
+
+  def test_unknown_arg_input
+    assert_equal 10, @calculator.Add('5,2,2,1')
+    assert_equal 20, @calculator.Add('5,5,2,2,2,2,2')
+    assert_equal 30, @calculator.Add('5,5,5,5,1,1,4,4')
+    assert_equal 40, @calculator.Add('10,5,5,5,5,2,2,2,2,2')
+  end
 end
 
 class Calculator
