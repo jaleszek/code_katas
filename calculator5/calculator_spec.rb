@@ -23,11 +23,22 @@ class TestCalculator < MiniTest::Unit::TestCase
     assert_equal 30, @calculator.Add('5,5,5,5,1,1,4,4')
     assert_equal 40, @calculator.Add('10,5,5,5,5,2,2,2,2,2')
   end
+
+  def test_new_line_delimiter
+    assert_equal 10, @calculator.Add("2\n2\n2\n2\n2")
+    assert_equal 20, @calculator.Add("3\n3\n3\n3\n3\n3\n2")
+    assert_equal 30, @calculator.Add("10\n10\n10")
+  end
 end
 
 class Calculator
   def self.Add(numbers)
     return 0 if numbers == ''
+    supported_delimiters = [',', "\n"]
+
+    supported_delimiters.each do |delimiter|
+      numbers = numbers.gsub(delimiter, ',')
+    end
 
     numbers.split(',').map(&:to_i).inject(:+)
   end
