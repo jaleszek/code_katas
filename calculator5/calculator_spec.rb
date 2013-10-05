@@ -49,6 +49,11 @@ class TestCalculator < MiniTest::Unit::TestCase
   def test_long_delimiters
     assert_equal 10, @calculator.Add("//*****\n1*****2*****3*****4")
   end
+
+  def test_multiple_custom_delimiters
+    assert_equal 10, @calculator.Add("//&&&,***\n2***2***2&&&2&&&2")
+    assert_equal 20, @calculator.Add("//%%%,^^^\n2%%%2^^^2%%%2^^^2^^^10")
+  end
 end
 
 class Calculator
@@ -73,7 +78,14 @@ class Calculator
   def self.get_delimiter_and_clean_input(input)
     delimiter_definition = input.scan(/\/\/\S+\n/)[0]
     if delimiter_definition
-      delimiter = Array(delimiter_definition[2..-2])
+      delimiter = delimiter_definition[2..-2]
+
+      multiple_delimiter = delimiter.split(',')
+      if multiple_delimiter.size > 1
+        delimiter = multiple_delimiter
+      end
+
+      delimiter = Array(delimiter)
       input = input.gsub(delimiter_definition, '')
     else
       delimiter = [',', "\n"]
