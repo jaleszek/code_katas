@@ -35,19 +35,28 @@ class TestCalculator < MiniTest::Unit::TestCase
     assert_equal 20, @calculator.Add("//..\n1..2..3..4..5..5")
     assert_equal 100, @calculator.Add("//qq\n10qq50qq40")
   end
+
+  def test_negative_input
+    err = assert_raises(Exception) { @calculator.Add('-1,-2,3')}
+    assert_match err.message, 'negatives not allowed: -1, -2'
+  end
 end
 
 class Calculator
   def self.Add(numbers)
     return 0 if numbers == ''
 
-    delimiters, numbers = get_delimiter_and_clean_input(numbers)
+    numbers = normalize_input(numbers)
+    numbers = collect_numbers(numbers)
+    handle_conditions(numbers)
 
-    delimiters.each do |delimiter|
-      numbers = numbers.gsub(delimiter, ',')
+    numbers.inject(:+)
+  end
+
+  def self.handle_conditions(numbers)
+    if negatives = numbers.select{ |number| number < 0 } and negatives.size > 0
+      raise Exception.new("negatives not allowed: #{negatives.join(', ')}")
     end
-
-    numbers.split(',').map(&:to_i).inject(:+)
   end
 
   def self.get_delimiter_and_clean_input(input)
@@ -60,5 +69,19 @@ class Calculator
       input = input
     end
     [delimiter, input]
+  end
+
+  def self.normalize_input(numbers)
+    delimiters, numbers = get_delimiter_and_clean_input(numbers)
+
+    delimiters.each do |delimiter|
+      numbers = numbers.gsub(delimiter, ',')
+    end
+
+    numbers
+  end
+
+  def self.collect_numbers(numbers)
+    numbers.split(',').map(&:to_i)
   end
 end
