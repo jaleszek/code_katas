@@ -45,6 +45,10 @@ class TestCalculator < MiniTest::Unit::TestCase
     assert_equal 10, @calculator.Add('1001,1001,10,10001,10000')
     assert_equal 20, @calculator.Add('5,1001,1002,5,10000,5,5')
   end
+
+  def test_long_delimiters
+    assert_equal 10, @calculator.Add("//*****\n1*****2*****3*****4")
+  end
 end
 
 class Calculator
