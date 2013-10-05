@@ -29,17 +29,36 @@ class TestCalculator < MiniTest::Unit::TestCase
     assert_equal 20, @calculator.Add("3\n3\n3\n3\n3\n3\n2")
     assert_equal 30, @calculator.Add("10\n10\n10")
   end
+
+  def test_custom_delimiters
+    assert_equal 10, @calculator.Add("//;;\n1;;2;;3;;4")
+    assert_equal 20, @calculator.Add("//..\n1..2..3..4..5..5")
+    assert_equal 100, @calculator.Add("//qq\n10qq50qq40")
+  end
 end
 
 class Calculator
   def self.Add(numbers)
     return 0 if numbers == ''
-    supported_delimiters = [',', "\n"]
 
-    supported_delimiters.each do |delimiter|
+    delimiters, numbers = get_delimiter_and_clean_input(numbers)
+
+    delimiters.each do |delimiter|
       numbers = numbers.gsub(delimiter, ',')
     end
 
     numbers.split(',').map(&:to_i).inject(:+)
+  end
+
+  def self.get_delimiter_and_clean_input(input)
+    delimiter_definition = input.scan(/\/\/\S+\n/)[0]
+    if delimiter_definition
+      delimiter = Array(delimiter_definition[2..-2])
+      input = input.gsub(delimiter_definition, '')
+    else
+      delimiter = [',', "\n"]
+      input = input
+    end
+    [delimiter, input]
   end
 end
