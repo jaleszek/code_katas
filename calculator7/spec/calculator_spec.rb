@@ -51,5 +51,5 @@ describe StringCalculator, '#add' do
     it 'includes negative numbers in the message' do
       lambda { "-1,12,-2,33".extend(StringCalculator).add}.should raise_error("Negatives are not allowed: -1, -2")
     end
-  end
+0  end
 end
